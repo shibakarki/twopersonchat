@@ -1,6 +1,6 @@
 const socket = io();
 
-// Ask for username when joining
+// Ask for username
 let username = "";
 while (!username) {
     username = prompt("Enter your name:").trim();
@@ -14,22 +14,32 @@ form.addEventListener('submit', (e) => {
     e.preventDefault();
     const msg = input.value.trim();
     if (msg) {
-        appendMessage(`${username}: ${msg}`, true);
-        socket.emit('chat message', { username, message: msg });
+        appendMessage(msg, username, true);
+        socket.emit('chat message', { username, message: msg, time: new Date().toLocaleTimeString() });
         input.value = '';
     }
 });
 
 socket.on('chat message', (data) => {
     if (data.username !== username) {
-        appendMessage(`${data.username}: ${data.message}`, false);
+        appendMessage(data.message, data.username, false, data.time);
     }
 });
 
-function appendMessage(msg, isSelf) {
+function appendMessage(msg, user, isSelf, time = null) {
     const li = document.createElement('li');
-    li.textContent = msg;
-    li.style.background = isSelf ? '#d1ffd6' : '#e2e2e2'; // differentiate sender
+    li.classList.add('message');
+    li.classList.add(isSelf ? 'self' : 'other');
+    
+    const text = document.createElement('div');
+    text.textContent = msg;
+    
+    const timeEl = document.createElement('div');
+    timeEl.classList.add('timestamp');
+    timeEl.textContent = time || new Date().toLocaleTimeString();
+    
+    li.appendChild(text);
+    li.appendChild(timeEl);
     messages.appendChild(li);
     messages.scrollTop = messages.scrollHeight;
 }

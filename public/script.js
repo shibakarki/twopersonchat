@@ -40,6 +40,15 @@ function appendMessage(msg, user, isSelf, time = null) {
     li.classList.add('message');
     li.classList.add(isSelf ? 'self' : 'other');
 
+    // Avatar
+    const avatar = document.createElement('div');
+    avatar.classList.add('avatar');
+    avatar.textContent = user.charAt(0).toUpperCase(); // Initial
+
+    // Message content
+    const content = document.createElement('div');
+    content.classList.add('content');
+
     const usernameEl = document.createElement('div');
     usernameEl.classList.add('username');
     usernameEl.textContent = user;
@@ -52,9 +61,12 @@ function appendMessage(msg, user, isSelf, time = null) {
     timeEl.classList.add('timestamp');
     timeEl.textContent = time || new Date().toLocaleTimeString();
 
-    li.appendChild(usernameEl);
-    li.appendChild(textEl);
-    li.appendChild(timeEl);
+    content.appendChild(usernameEl);
+    content.appendChild(textEl);
+    content.appendChild(timeEl);
+
+    li.appendChild(avatar);
+    li.appendChild(content);
     messages.appendChild(li);
     messages.scrollTop = messages.scrollHeight;
 }

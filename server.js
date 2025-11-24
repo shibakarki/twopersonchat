@@ -1,14 +1,27 @@
-const express = require("express");
-const path = require("path");
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+
 const app = express();
-const port = process.env.PORT || 3000;
+const server = http.createServer(app);
+const io = new Server(server);
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static('public')); // Serve frontend files
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+io.on('connection', (socket) => {
+    console.log('A user connected:', socket.id);
+
+    socket.on('chat message', (msg) => {
+        // Emit message to everyone except sender
+        socket.broadcast.emit('chat message', msg);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('A user disconnected:', socket.id);
+    });
 });
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+const PORT = 3000;
+server.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
 });

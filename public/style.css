@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #f0f2f5;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -9,11 +9,12 @@ body {
 }
 
 .chat-container {
-    background: white;
     width: 400px;
     max-width: 100%;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    height: 600px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -25,14 +26,38 @@ body {
     margin: 0;
     flex: 1;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
-#messages li {
-    padding: 8px 12px;
-    margin-bottom: 6px;
-    background: #e2e2e2;
-    border-radius: 4px;
+.message {
+    max-width: 70%;
+    padding: 10px 15px;
+    margin: 5px 0;
+    border-radius: 20px;
     word-wrap: break-word;
+    position: relative;
+}
+
+.message.self {
+    background: #0084ff;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+}
+
+.message.other {
+    background: #e4e6eb;
+    color: black;
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+}
+
+.timestamp {
+    font-size: 10px;
+    color: #666;
+    margin-top: 3px;
+    text-align: right;
 }
 
 #chat-form {
@@ -43,7 +68,7 @@ body {
 #message-input {
     flex: 1;
     border: none;
-    padding: 10px;
+    padding: 15px;
     font-size: 16px;
 }
 
@@ -52,13 +77,14 @@ body {
 }
 
 button {
-    padding: 10px 15px;
+    padding: 0 20px;
     border: none;
-    background: #007bff;
+    background: #0084ff;
     color: white;
     cursor: pointer;
+    font-size: 16px;
 }
 
 button:hover {
-    background: #0056b3;
+    background: #006bbf;
 }

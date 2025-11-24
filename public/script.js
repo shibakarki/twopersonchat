@@ -39,20 +39,21 @@ function appendMessage(msg, user, isSelf, time = null) {
     const li = document.createElement('li');
     li.classList.add('message');
     li.classList.add(isSelf ? 'self' : 'other');
-    
+
     const usernameEl = document.createElement('div');
     usernameEl.classList.add('username');
     usernameEl.textContent = user;
 
-    const text = document.createElement('div');
-    text.textContent = msg;
-    
+    const textEl = document.createElement('div');
+    textEl.classList.add('text');
+    textEl.textContent = msg;
+
     const timeEl = document.createElement('div');
     timeEl.classList.add('timestamp');
     timeEl.textContent = time || new Date().toLocaleTimeString();
-    
+
     li.appendChild(usernameEl);
-    li.appendChild(text);
+    li.appendChild(textEl);
     li.appendChild(timeEl);
     messages.appendChild(li);
     messages.scrollTop = messages.scrollHeight;

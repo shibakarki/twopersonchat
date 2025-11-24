@@ -32,39 +32,65 @@ body {
 
 .message {
     max-width: 70%;
-    padding: 10px 15px;
     margin: 5px 0;
-    border-radius: 20px;
-    word-wrap: break-word;
-    position: relative;
     display: flex;
     flex-direction: column;
+    border-radius: 15px;
 }
 
 .message.self {
-    background: #0084ff;
-    color: white;
     align-self: flex-end;
-    border-bottom-right-radius: 5px;
 }
 
 .message.other {
-    background: #e4e6eb;
-    color: black;
     align-self: flex-start;
-    border-bottom-left-radius: 5px;
 }
 
+/* Username area */
 .username {
     font-weight: bold;
-    margin-bottom: 3px;
+    padding: 5px 10px;
+    border-radius: 10px 10px 0 0;
     font-size: 12px;
 }
 
+.message.self .username {
+    background-color: #cce5ff; /* light blue for self */
+    color: #004085;
+    text-align: right;
+}
+
+.message.other .username {
+    background-color: #e2e3e5; /* light gray for other */
+    color: #383d41;
+    text-align: left;
+}
+
+/* Message bubble */
+.text {
+    padding: 10px 15px;
+    border-radius: 0 0 15px 15px;
+    word-wrap: break-word;
+    font-size: 14px;
+}
+
+.message.self .text {
+    background-color: #0084ff; /* blue for self */
+    color: white;
+    text-align: right;
+}
+
+.message.other .text {
+    background-color: #e4e6eb; /* gray for other */
+    color: black;
+    text-align: left;
+}
+
+/* Timestamp */
 .timestamp {
     font-size: 10px;
     color: #666;
-    margin-top: 3px;
+    margin-top: 2px;
     text-align: right;
 }
 

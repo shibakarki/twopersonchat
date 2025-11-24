@@ -6,14 +6,14 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-app.use(express.static('public')); // Serve frontend files
+app.use(express.static('public'));
 
 io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);
 
-    socket.on('chat message', (msg) => {
-        // Emit message to everyone except sender
-        socket.broadcast.emit('chat message', msg);
+    socket.on('chat message', (data) => {
+        // Broadcast message to everyone except sender
+        socket.broadcast.emit('chat message', data);
     });
 
     socket.on('disconnect', () => {

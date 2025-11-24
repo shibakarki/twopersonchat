@@ -1,10 +1,9 @@
 const socket = io();
 
 // Ask for username when joining
-let username = prompt("Enter your name (Shiba or Kabit):").trim();
-if (username !== "Shiba" && username !== "Kabit") {
-    alert("Invalid name! Defaulting to Shiba.");
-    username = "Shiba";
+let username = "";
+while (!username) {
+    username = prompt("Enter your name:").trim();
 }
 
 const form = document.getElementById('chat-form');

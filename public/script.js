@@ -1,5 +1,6 @@
 const socket = io();
 
+// Ask for username
 let username = "";
 function askUsername() {
     username = prompt("Enter your name:").trim();
@@ -39,6 +40,10 @@ function appendMessage(msg, user, isSelf, time = null) {
     li.classList.add('message');
     li.classList.add(isSelf ? 'self' : 'other');
     
+    const usernameEl = document.createElement('div');
+    usernameEl.classList.add('username');
+    usernameEl.textContent = user;
+
     const text = document.createElement('div');
     text.textContent = msg;
     
@@ -46,6 +51,7 @@ function appendMessage(msg, user, isSelf, time = null) {
     timeEl.classList.add('timestamp');
     timeEl.textContent = time || new Date().toLocaleTimeString();
     
+    li.appendChild(usernameEl);
     li.appendChild(text);
     li.appendChild(timeEl);
     messages.appendChild(li);

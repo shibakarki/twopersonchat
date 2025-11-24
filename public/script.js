@@ -1,10 +1,18 @@
 const socket = io();
 
-// Ask for username
 let username = "";
-while (!username) {
+function askUsername() {
     username = prompt("Enter your name:").trim();
+    if (!username) return askUsername();
+
+    socket.emit('join', username, (accepted) => {
+        if (!accepted) {
+            alert("Username taken! Please choose another.");
+            askUsername();
+        }
+    });
 }
+askUsername();
 
 const form = document.getElementById('chat-form');
 const input = document.getElementById('message-input');

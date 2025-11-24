@@ -1,45 +1,24 @@
-// server.js
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-
+const express = require("express");
+const path = require("path");
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
 
-app.use(express.static(__dirname)); // Serve index.html, CSS, JS
+app.use(express.static(path.join(__dirname, "public")));
 
-let onlineUser = null; // Track who is online
+io.on("connection", (socket) => {
+  console.log("a user connected");
 
-io.on('connection', (socket) => {
-    console.log('A user connected:', socket.id);
+  socket.on("chat message", (msg) => {
+    io.emit("chat message", msg);
+  });
 
-    // Handle login
-    socket.on('login', (username) => {
-        socket.username = username;
-        onlineUser = username;
-        io.emit('status', { onlineUser });
-        console.log(`${username} is online`);
-    });
-
-    // Handle chat messages
-    socket.on('chat message', (msg) => {
-        if (onlineUser && socket.username) {
-            io.emit('chat message', { username: socket.username, msg });
-        }
-    });
-
-    // Handle disconnect
-    socket.on('disconnect', () => {
-        if (socket.username === onlineUser) {
-            onlineUser = null;
-            io.emit('status', { onlineUser });
-            console.log(`${socket.username} disconnected`);
-        }
-    });
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
 });
 
-const PORT = 3000;
-server.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+const PORT = process.env.PORT || 3000;
+http.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

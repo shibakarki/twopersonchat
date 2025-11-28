@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Multi-Sender → Single Receiver</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- LOGIN -->
+  <div id="login-screen" class="login-container">
+    <h2>Join</h2>
+    <form id="login-form">
+      <input id="username-input" type="text" placeholder="Enter your name..." autocomplete="off" required />
+      <button type="submit">Join Chat</button>
+      <p class="hint">Login name "shiba karki" becomes the Receiver</p>
+      <p id="login-error" class="error" style="display:none;"></p>
+    </form>
+  </div>
+
+  <!-- MAIN UI (hidden until login) -->
+  <div id="main-screen" class="main-container" style="display:none;">
+    <div class="left-col">
+      <div class="top-bar" id="role-banner">Role: </div>
+
+      <!-- Receiver panel -->
+      <div id="receiver-panel" class="panel" style="display:none;">
+        <h4>Online Senders</h4>
+        <div id="sender-list" class="sender-list"></div>
+        <div class="sub-box">
+          <div>Subscribed to: <span id="subscribed-to">None</span></div>
+          <button id="unsubscribe-btn" style="display:none;">Unsubscribe</button>
+        </div>
+
+        <h4>Incoming Data</h4>
+        <div id="incoming-feed" class="incoming-feed">
+          <p class="muted">No data yet. Subscribe to a sender to receive its data.</p>
+        </div>
+      </div>
+
+      <!-- Sender panel -->
+      <div id="sender-panel" class="panel" style="display:none;">
+        <h4>Sender Controls</h4>
+
+        <div class="toggle-row">
+          <label>Send Chat</label>
+          <input type="checkbox" id="toggle-chat" checked />
+        </div>
+
+        <div class="toggle-row">
+          <label>Send GPS (location)</label>
+          <input type="checkbox" id="toggle-gps" />
+        </div>
+
+        <div class="toggle-row">
+          <label>Send Accelerometer</label>
+          <input type="checkbox" id="toggle-accel" />
+        </div>
+
+        <div class="toggle-row">
+          <label>Send Gyroscope</label>
+          <input type="checkbox" id="toggle-gyro" />
+        </div>
+
+        <div class="toggle-row">
+          <label>Send Battery</label>
+          <input type="checkbox" id="toggle-battery" />
+        </div>
+
+        <div class="toggle-row">
+          <label>Send Network Info</label>
+          <input type="checkbox" id="toggle-network" />
+        </div>
+
+        <div class="toggle-row">
+          <label>Send Ambient Light</label>
+          <input type="checkbox" id="toggle-light" />
+        </div>
+
+        <div class="toggle-row">
+          <label>Enable Camera Preview (permission)</label>
+          <input type="checkbox" id="toggle-camera" />
+        </div>
+
+        <div class="preview-area" id="camera-preview" style="display:none;">
+          <video id="local-video" autoplay playsinline muted></video>
+        </div>
+
+        <h4>Send Message</h4>
+        <form id="send-chat-form">
+          <input id="send-chat-input" placeholder="Type chat message..." autocomplete="off" />
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="feed-top">
+        <h3>Activity Feed (Receiver view)</h3>
+      </div>
+
+      <div id="activity-list" class="activity-list">
+        <p class="muted">No activity yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

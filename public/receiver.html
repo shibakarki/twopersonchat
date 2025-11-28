@@ -1,1 +1,30 @@
-receiver
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Receiver</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Receiver</h2>
+    <input id="name-input" placeholder="Enter your name">
+    <button id="join-btn">Join as Receiver</button>
+
+    <div id="sender-list" style="display:none;">
+        <h3>Online Senders</h3>
+        <ul id="senders"></ul>
+    </div>
+
+    <div id="data-display" style="display:none;">
+        <h3>Live Data</h3>
+        <video id="remoteVideo" autoplay width="300"></video>
+        <div id="sensorData"></div>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="receiver.js"></script>
+</body>
+</html>

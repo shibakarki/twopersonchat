@@ -1,1 +1,35 @@
-sender.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sender</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Sender</h2>
+    <input id="name-input" placeholder="Enter your name">
+    <button id="join-btn">Join as Sender</button>
+
+    <div id="controls" style="display:none;">
+        <video id="localVideo" autoplay muted width="300"></video>
+        <div>
+            <label>Send Camera</label>
+            <input type="checkbox" id="cameraToggle" checked>
+        </div>
+        <div>
+            <label>Send Location</label>
+            <input type="checkbox" id="locationToggle" checked>
+        </div>
+        <div>
+            <label>Send Speed</label>
+            <input type="checkbox" id="speedToggle" checked>
+        </div>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="sender.js"></script>
+</body>
+</html>

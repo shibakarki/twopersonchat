@@ -7,20 +7,23 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container">
+<div class="container" id="loginContainer">
     <h1>Welcome</h1>
-    <p>Select your role:</p>
-    <button id="senderBtn">Join as Sender</button>
-    <button id="receiverBtn">Join as Receiver</button>
+    <p>Enter your name to start:</p>
+    <input type="text" id="nameInput" placeholder="Your name">
+    <button id="joinBtn">Join</button>
 </div>
 
 <script>
-document.getElementById('senderBtn').onclick = () => {
-    window.location.href = 'sender.html';
-};
+document.getElementById('joinBtn').onclick = () => {
+    const name = document.getElementById('nameInput').value.trim();
+    if (!name) return alert('Please enter your name');
 
-document.getElementById('receiverBtn').onclick = () => {
-    window.location.href = 'receiver.html';
+    // Assign role based on name
+    let role = (name.toLowerCase() === 'shiba karki') ? 'receiver' : 'sender';
+
+    // Redirect with name and role as query params
+    window.location.href = `${role}.html?name=${encodeURIComponent(name)}`;
 };
 </script>
 </body>

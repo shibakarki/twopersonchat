@@ -8,88 +8,100 @@
 </head>
 <body>
   <div class="page-container">
+
+    <!-- Header -->
     <div class="header">
       <h1>💡 Light Device</h1>
       <p id="userName" class="user-name"></p>
     </div>
 
+    <!-- Main Content Card -->
     <div class="content-card">
+
+      <!-- Device Status -->
       <div class="status-indicator" id="statusIndicator">
         <span class="status-dot"></span>
         <span class="status-text">Connecting...</span>
       </div>
 
+      <!-- Controller Status -->
       <div class="controller-status" id="controllerStatus">
         <span class="status-icon">🎮</span>
         <span class="status-label">Controller: </span>
         <span class="status-value">Offline</span>
       </div>
 
+      <!-- Bulb Room Section -->
       <div class="bulb-section">
-        <div class="bulb-container" id="bulbContainer">
-          <!-- Light bulb SVG -->
-          <svg class="light-bulb" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
-            <!-- Bulb glow effect -->
-            <defs>
-              <radialGradient id="bulbGlow" cx="50%" cy="40%">
-                <stop offset="0%" style="stop-color:#fff9e6; stop-opacity:1" id="glowInner"/>
-                <stop offset="40%" style="stop-color:#ffd700; stop-opacity:0.6" id="glowMid"/>
-                <stop offset="100%" style="stop-color:#ffd700; stop-opacity:0" id="glowOuter"/>
-              </radialGradient>
-              
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
-                <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-            </defs>
+        <div class="room-wrapper">
+          <div class="bulb-container" id="bulbContainer">
+            <svg class="light-bulb" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <!-- Radial gradient for glow -->
+                <radialGradient id="bulbGlow" cx="50%" cy="40%">
+                  <stop offset="0%" style="stop-color:#fff9e6; stop-opacity:1"/>
+                  <stop offset="40%" style="stop-color:#ffd700; stop-opacity:0.6"/>
+                  <stop offset="100%" style="stop-color:#ffd700; stop-opacity:0"/>
+                </radialGradient>
 
-            <!-- Glow circle (appears when light is on) -->
-            <circle id="glowCircle" cx="100" cy="80" r="70" fill="url(#bulbGlow)" opacity="0" filter="url(#glow)"/>
-            
-            <!-- Bulb glass -->
-            <path id="bulbGlass" d="M 100 20 
-                     Q 130 20, 140 50
-                     Q 145 70, 145 90
-                     Q 145 120, 130 140
-                     L 120 160
-                     L 80 160
-                     L 70 140
-                     Q 55 120, 55 90
-                     Q 55 70, 60 50
-                     Q 70 20, 100 20 Z"
-                  fill="#e0e0e0" 
-                  stroke="#666" 
-                  stroke-width="2"/>
-            
-            <!-- Filament -->
-            <path id="filament" d="M 90 80 Q 95 90, 100 80 Q 105 70, 110 80 Q 105 90, 100 100 Q 95 90, 90 100" 
-                  stroke="#ff6b00" 
-                  stroke-width="3" 
-                  fill="none" 
-                  opacity="0.3"/>
-            
-            <!-- Base screw threads -->
-            <rect x="75" y="160" width="50" height="8" fill="#888" stroke="#555" stroke-width="1"/>
-            <rect x="75" y="170" width="50" height="8" fill="#888" stroke="#555" stroke-width="1"/>
-            <rect x="75" y="180" width="50" height="8" fill="#888" stroke="#555" stroke-width="1"/>
-            <rect x="75" y="190" width="50" height="10" fill="#666" stroke="#444" stroke-width="1"/>
-          </svg>
+                <!-- Glow filter -->
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- Glow circle -->
+              <circle id="glowCircle" cx="100" cy="80" r="70" fill="url(#bulbGlow)" opacity="0" filter="url(#glow)"/>
+
+              <!-- Bulb glass -->
+              <path id="bulbGlass" d="M 100 20 
+                                       Q 130 20, 140 50
+                                       Q 145 70, 145 90
+                                       Q 145 120, 130 140
+                                       L 120 160
+                                       L 80 160
+                                       L 70 140
+                                       Q 55 120, 55 90
+                                       Q 55 70, 60 50
+                                       Q 70 20, 100 20 Z"
+                    fill="#e0e0e0" 
+                    stroke="#666" 
+                    stroke-width="2"/>
+
+              <!-- Filament -->
+              <path id="filament" d="M 90 80 Q 95 90, 100 80 Q 105 70, 110 80 Q 105 90, 100 100 Q 95 90, 90 100" 
+                    stroke="#ff6b00" 
+                    stroke-width="3" 
+                    fill="none" 
+                    opacity="0.3"/>
+
+              <!-- Bulb base -->
+              <rect x="75" y="160" width="50" height="8" fill="#888" stroke="#555" stroke-width="1"/>
+              <rect x="75" y="170" width="50" height="8" fill="#888" stroke="#555" stroke-width="1"/>
+              <rect x="75" y="180" width="50" height="8" fill="#888" stroke="#555" stroke-width="1"/>
+              <rect x="75" y="190" width="50" height="10" fill="#666" stroke="#444" stroke-width="1"/>
+            </svg>
+          </div>
         </div>
 
+        <!-- Intensity Readout -->
         <div class="intensity-readout">
           <div class="readout-label">Current Intensity</div>
           <div class="readout-value" id="currentIntensity">0%</div>
         </div>
       </div>
+
     </div>
   </div>
 
+  <!-- Socket.io and Device Scripts -->
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    // Get user info from URL
+    // Extract user info from URL
     const urlParams = new URLSearchParams(window.location.search);
     const userName = urlParams.get('name') || 'Device';
     const role = urlParams.get('role');
@@ -109,7 +121,6 @@
 
     // Register as device
     socket.on('connect', () => {
-      console.log('Connected to server');
       socket.emit('register', { role: 'device', name: userName });
       updateStatus('connected');
     });
@@ -128,47 +139,36 @@
     // Update bulb appearance based on intensity
     function updateBulb(intensity) {
       currentIntensity.textContent = `${intensity}%`;
-      
-      // Normalize intensity (0-1)
       const normalized = intensity / 100;
-      
-      // Update bulb glass color (from gray to bright yellow)
+
+      // Glass color
       const r = Math.round(224 + (255 - 224) * normalized);
       const g = Math.round(224 + (215 - 224) * normalized);
       const b = Math.round(224 + (0 - 224) * normalized);
       bulbGlass.setAttribute('fill', `rgb(${r}, ${g}, ${b})`);
-      
-      // Update filament opacity (glows brighter)
+
+      // Filament glow
       filament.setAttribute('opacity', 0.3 + (normalized * 0.7));
-      
-      // Update glow circle
+
+      // Glow circle
       glowCircle.setAttribute('opacity', normalized * 0.8);
       glowCircle.setAttribute('r', 70 + (normalized * 30));
-      
-      // Add pulsing effect at high intensity
-      if (intensity > 80) {
+
+      // Room ambient glow
+      document.querySelector('.room-wrapper').style.boxShadow = `0 0 ${30 + normalized*70}px rgba(255,223,0,${0.2+normalized*0.5}) inset`;
+
+      // Pulse effect
+      if(intensity > 80) {
         glowCircle.style.animation = 'pulse 2s ease-in-out infinite';
       } else {
         glowCircle.style.animation = 'none';
       }
     }
 
-    // Handle disconnection
-    socket.on('disconnect', () => {
-      console.log('Disconnected from server');
-      updateStatus('disconnected');
-    });
-
-    socket.on('disconnected', (data) => {
-      alert(data.message);
-      window.location.href = 'index.html';
-    });
-
-    // Update status indicator
+    // Status indicator update
     function updateStatus(status) {
       const statusText = statusIndicator.querySelector('.status-text');
       statusIndicator.className = 'status-indicator';
-      
       if (status === 'connected') {
         statusIndicator.classList.add('connected');
         statusText.textContent = 'Connected';
@@ -178,11 +178,10 @@
       }
     }
 
-    // Update controller status
+    // Controller status update
     function updateControllerStatus(online) {
       const statusValue = controllerStatus.querySelector('.status-value');
       controllerStatus.className = 'controller-status';
-      
       if (online) {
         controllerStatus.classList.add('online');
         statusValue.textContent = 'Online';
@@ -192,7 +191,7 @@
       }
     }
 
-    // Add CSS animation for pulse
+    // CSS pulse animation
     const style = document.createElement('style');
     style.textContent = `
       @keyframes pulse {
@@ -201,6 +200,9 @@
       }
     `;
     document.head.appendChild(style);
+
+    // Handle server disconnection
+    socket.on('disconnect', () => updateStatus('disconnected'));
   </script>
 </body>
 </html>

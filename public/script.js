@@ -1,82 +1,74 @@
 const socket = io();
 
 let username = "";
-let role = "";
+let isReceiver = false;
 
-function askUsername() {
-    username = prompt("Enter your name:").trim();
-    if (!username) return askUsername();
+const loginScreen = document.getElementById("login-screen");
+const chatScreen = document.getElementById("chat-screen");
+const loginForm = document.getElementById("login-form");
+const usernameInput = document.getElementById("username-input");
 
-    socket.emit("join", username, (res) => {
-        if (!res.success) {
-            alert(res.msg);
-            askUsername();
-        } else {
-            role = res.role;
-            console.log("Logged in as:", role);
+const userRoleDisplay = document.getElementById("user-role-display");
 
-            if (role === "receiver") {
-                document.getElementById("receiver-panel").style.display = "block";
-            }
-        }
-    });
-}
-askUsername();
-
-const form = document.getElementById("chat-form");
-const input = document.getElementById("message-input");
+const chatForm = document.getElementById("chat-form");
+const messageInput = document.getElementById("message-input");
 const messages = document.getElementById("messages");
-const senderListDiv = document.getElementById("sender-list");
 
-
-form.addEventListener("submit", (e) => {
+// ----------------------------
+// LOGIN FORM HANDLER
+// ----------------------------
+loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    if (role !== "sender") {
-        alert("Only senders can send messages!");
-        return;
+    username = usernameInput.value.trim();
+
+    if (!username) return;
+
+    // Check for receiver role
+    if (username.toLowerCase() === "shiba karki") {
+        isReceiver = true;
+        userRoleDisplay.textContent = "Logged in as Receiver (Shiba Karki)";
+    } else {
+        userRoleDisplay.textContent = `Logged in as Sender (${username})`;
     }
 
-    const msg = input.value.trim();
-    if (msg) {
-        socket.emit("chat message", {
-            username,
-            message: msg,
-            time: new Date().toLocaleTimeString(),
-        });
+    // Show chat screen
+    loginScreen.style.display = "none";
+    chatScreen.style.display = "block";
 
-        appendMessage(msg, username, true);
-        input.value = "";
-    }
+    // Notify server
+    socket.emit("joined", username);
 });
 
 
-socket.on("chat message", (data) => {
-    appendMessage(data.message, data.username, false);
-});
+// ----------------------------
+// SEND MESSAGE
+// ----------------------------
+chatForm.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-socket.on("sender list", (list) => {
-    senderListDiv.innerHTML = "";
-    list.forEach(s => {
-        const div = document.createElement("div");
-        div.className = "sender-item";
-        div.textContent = s;
-        senderListDiv.appendChild(div);
+    const msg = messageInput.value.trim();
+    if (!msg) return;
+
+    socket.emit("chat message", {
+        sender: username,
+        message: msg
     });
+
+    messageInput.value = "";
 });
 
 
-function appendMessage(msg, user, isSelf) {
+// ----------------------------
+// RECEIVE MESSAGE
+// ----------------------------
+socket.on("chat message", (data) => {
     const li = document.createElement("li");
-    li.classList.add("message");
-    li.classList.add(isSelf ? "self" : "other");
-
     li.innerHTML = `
-        <div class="name">${user}</div>
-        <div class="text">${msg}</div>
-        <div class="timestamp">${new Date().toLocaleTimeString()}</div>
+        <div class="msg-box">
+            <span class="msg-sender">${data.sender}</span>
+            <span class="msg-text">${data.message}</span>
+        </div>
     `;
-
     messages.appendChild(li);
-    messages.scrollTop = messages.scrollHeight;
-}
+});

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Light Control System - Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <h1>💡 Light Control System</h1>
+      <p class="subtitle">Enter your name to continue</p>
+      
+      <div class="input-group">
+        <label for="nameInput">Your Name</label>
+        <input 
+          type="text" 
+          id="nameInput" 
+          placeholder="Enter your name..." 
+          autocomplete="off"
+        >
+      </div>
+      
+      <button id="continueBtn" class="primary-btn">Continue</button>
+      
+      <div class="info-box">
+        <p><strong>🎮 Controller:</strong> Use name "Shiba Karki"</p>
+        <p><strong>💡 Device:</strong> Use any other name</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const nameInput = document.getElementById('nameInput');
+    const continueBtn = document.getElementById('continueBtn');
+
+    // Focus on input
+    nameInput.focus();
+
+    // Handle enter key
+    nameInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        handleContinue();
+      }
+    });
+
+    continueBtn.addEventListener('click', handleContinue);
+
+    function handleContinue() {
+      const name = nameInput.value.trim();
+      
+      if (!name) {
+        alert('Please enter your name');
+        return;
+      }
+
+      // Determine role based on name
+      const role = (name === 'Shiba Karki') ? 'controller' : 'device';
+      
+      // Redirect to appropriate page with name and role
+      const targetPage = role === 'controller' ? 'controller.html' : 'device.html';
+      window.location.href = `${targetPage}?name=${encodeURIComponent(name)}&role=${role}`;
+    }
+  </script>
+</body>
+</html>

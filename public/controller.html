@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controller - Light Control</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page-container">
+    <div class="header">
+      <h1>🎮 Controller</h1>
+      <p id="userName" class="user-name"></p>
+    </div>
+
+    <div class="content-card">
+      <div class="status-indicator" id="statusIndicator">
+        <span class="status-dot"></span>
+        <span class="status-text">Connecting...</span>
+      </div>
+
+      <div class="control-section">
+        <h2>Light Intensity Control</h2>
+        
+        <div class="intensity-display">
+          <span id="intensityValue">0</span>%
+        </div>
+
+        <div class="slider-container">
+          <input 
+            type="range" 
+            id="intensitySlider" 
+            min="0" 
+            max="100" 
+            value="0"
+            class="intensity-slider"
+          >
+          <div class="slider-labels">
+            <span>0%</span>
+            <span>25%</span>
+            <span>50%</span>
+            <span>75%</span>
+            <span>100%</span>
+          </div>
+        </div>
+
+        <div class="quick-controls">
+          <button class="quick-btn" data-value="0">Off</button>
+          <button class="quick-btn" data-value="25">25%</button>
+          <button class="quick-btn" data-value="50">50%</button>
+          <button class="quick-btn" data-value="75">75%</button>
+          <button class="quick-btn" data-value="100">Max</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    // Get user info from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const userName = urlParams.get('name') || 'Controller';
+    const role = urlParams.get('role');
+
+    // Display user name
+    document.getElementById('userName').textContent = `Welcome, ${userName}`;
+
+    // Connect to server
+    const socket = io();
+    
+    const intensitySlider = document.getElementById('intensitySlider');
+    const intensityValue = document.getElementById('intensityValue');
+    const statusIndicator = document.getElementById('statusIndicator');
+    const quickBtns = document.querySelectorAll('.quick-btn');
+
+    let isConnected = false;
+
+    // Register as controller
+    socket.on('connect', () => {
+      console.log('Connected to server');
+      socket.emit('register', { role: 'controller', name: userName });
+      updateStatus('connected');
+    });
+
+    // Receive current intensity from server
+    socket.on('currentIntensity', (data) => {
+      intensitySlider.value = data.intensity;
+      intensityValue.textContent = data.intensity;
+      updateSliderBackground(data.intensity);
+    });
+
+    // Handle slider input
+    intensitySlider.addEventListener('input', (e) => {
+      const intensity = parseInt(e.target.value);
+      intensityValue.textContent = intensity;
+      updateSliderBackground(intensity);
+      
+      // Send to server
+      socket.emit('setIntensity', { intensity });
+    });
+
+    // Quick control buttons
+    quickBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const value = parseInt(btn.dataset.value);
+        intensitySlider.value = value;
+        intensityValue.textContent = value;
+        updateSliderBackground(value);
+        socket.emit('setIntensity', { intensity: value });
+      });
+    });
+
+    // Update slider visual background
+    function updateSliderBackground(value) {
+      const percentage = value;
+      intensitySlider.style.background = `linear-gradient(to right, #ffd700 0%, #ffd700 ${percentage}%, #e0e0e0 ${percentage}%, #e0e0e0 100%)`;
+    }
+
+    // Handle disconnection
+    socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+      updateStatus('disconnected');
+    });
+
+    socket.on('disconnected', (data) => {
+      alert(data.message);
+      window.location.href = 'index.html';
+    });
+
+    // Update status indicator
+    function updateStatus(status) {
+      const statusText = statusIndicator.querySelector('.status-text');
+      const statusDot = statusIndicator.querySelector('.status-dot');
+      
+      statusIndicator.className = 'status-indicator';
+      
+      if (status === 'connected') {
+        statusIndicator.classList.add('connected');
+        statusText.textContent = 'Connected';
+        isConnected = true;
+      } else if (status === 'disconnected') {
+        statusIndicator.classList.add('disconnected');
+        statusText.textContent = 'Disconnected';
+        isConnected = false;
+      }
+    }
+
+    // Initialize slider background
+    updateSliderBackground(0);
+  </script>
+</body>
+</html>

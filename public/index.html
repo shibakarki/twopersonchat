@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta-name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multi-Sender Chat</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,8 +11,10 @@
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="login-container">
         <h2>Enter your name to join</h2>
-        <input id="username-input" type="text" placeholder="Your name..." autocomplete="off">
-        <button id="join-btn">Join Chat</button>
+        <form id="login-form">
+            <input id="username-input" type="text" placeholder="Your name..." autocomplete="off" required>
+            <button type="submit">Join Chat</button>
+        </form>
     </div>
 
     <!-- CHAT SCREEN -->

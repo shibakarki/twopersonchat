@@ -1,72 +1,82 @@
 const socket = io();
 
-// Ask for username
 let username = "";
+let role = "";
+
 function askUsername() {
     username = prompt("Enter your name:").trim();
     if (!username) return askUsername();
 
-    socket.emit('join', username, (accepted) => {
-        if (!accepted) {
-            alert("Username taken! Please choose another.");
+    socket.emit("join", username, (res) => {
+        if (!res.success) {
+            alert(res.msg);
             askUsername();
+        } else {
+            role = res.role;
+            console.log("Logged in as:", role);
+
+            if (role === "receiver") {
+                document.getElementById("receiver-panel").style.display = "block";
+            }
         }
     });
 }
 askUsername();
 
-const form = document.getElementById('chat-form');
-const input = document.getElementById('message-input');
-const messages = document.getElementById('messages');
+const form = document.getElementById("chat-form");
+const input = document.getElementById("message-input");
+const messages = document.getElementById("messages");
+const senderListDiv = document.getElementById("sender-list");
 
-form.addEventListener('submit', (e) => {
+
+form.addEventListener("submit", (e) => {
     e.preventDefault();
+
+    if (role !== "sender") {
+        alert("Only senders can send messages!");
+        return;
+    }
+
     const msg = input.value.trim();
     if (msg) {
+        socket.emit("chat message", {
+            username,
+            message: msg,
+            time: new Date().toLocaleTimeString(),
+        });
+
         appendMessage(msg, username, true);
-        socket.emit('chat message', { username, message: msg, time: new Date().toLocaleTimeString() });
-        input.value = '';
+        input.value = "";
     }
 });
 
-socket.on('chat message', (data) => {
-    if (data.username !== username) {
-        appendMessage(data.message, data.username, false, data.time);
-    }
+
+socket.on("chat message", (data) => {
+    appendMessage(data.message, data.username, false);
 });
 
-function appendMessage(msg, user, isSelf, time = null) {
-    const li = document.createElement('li');
-    li.classList.add('message');
-    li.classList.add(isSelf ? 'self' : 'other');
+socket.on("sender list", (list) => {
+    senderListDiv.innerHTML = "";
+    list.forEach(s => {
+        const div = document.createElement("div");
+        div.className = "sender-item";
+        div.textContent = s;
+        senderListDiv.appendChild(div);
+    });
+});
 
-    // Avatar
-    const avatar = document.createElement('div');
-    avatar.classList.add('avatar');
-    avatar.textContent = user.charAt(0).toUpperCase(); // Initial
 
-    // Message content
-    const content = document.createElement('div');
-    content.classList.add('content');
+function appendMessage(msg, user, isSelf) {
+    const li = document.createElement("li");
+    li.classList.add("message");
+    li.classList.add(isSelf ? "self" : "other");
 
-    const usernameEl = document.createElement('div');
-    usernameEl.classList.add('username');
-    usernameEl.textContent = user;
+    li.innerHTML = `
+        <div class="name">${user}</div>
+        <div class="text">${msg}</div>
+        <div class="timestamp">${new Date().toLocaleTimeString()}</div>
+    `;
 
-    const textEl = document.createElement('div');
-    textEl.classList.add('text');
-    textEl.textContent = msg;
-
-    const timeEl = document.createElement('div');
-    timeEl.classList.add('timestamp');
-    timeEl.textContent = time || new Date().toLocaleTimeString();
-
-    content.appendChild(usernameEl);
-    content.appendChild(textEl);
-    content.appendChild(timeEl);
-
-    li.appendChild(avatar);
-    li.appendChild(content);
     messages.appendChild(li);
     messages.scrollTop = messages.scrollHeight;
 }

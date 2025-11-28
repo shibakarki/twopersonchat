@@ -8,25 +8,21 @@
 </head>
 <body>
 <div class="container">
-    <h2>Sender</h2>
-    <input id="name-input" placeholder="Enter your name">
-    <button id="join-btn">Join as Sender</button>
+  <h2>Sender</h2>
+  <div id="loginDiv">
+    <input type="text" id="nameInput" placeholder="Enter your name">
+    <button id="joinBtn">Join</button>
+  </div>
 
-    <div id="controls" style="display:none;">
-        <video id="localVideo" autoplay muted width="300"></video>
-        <div>
-            <label>Send Camera</label>
-            <input type="checkbox" id="cameraToggle" checked>
-        </div>
-        <div>
-            <label>Send Location</label>
-            <input type="checkbox" id="locationToggle" checked>
-        </div>
-        <div>
-            <label>Send Speed</label>
-            <input type="checkbox" id="speedToggle" checked>
-        </div>
+  <div id="controls" style="display:none;">
+    <video id="localVideo" autoplay muted width="300"></video>
+
+    <div class="sender-controls">
+      <label>Send Camera<input type="checkbox" id="cameraToggle" checked></label>
+      <label>Send Location<input type="checkbox" id="locationToggle" checked></label>
+      <label>Send Speed<input type="checkbox" id="speedToggle" checked></label>
     </div>
+  </div>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>

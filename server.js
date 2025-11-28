@@ -8,54 +8,60 @@ const io = new Server(server);
 
 app.use(express.static('public'));
 
+// Keep track of online senders
 let onlineSenders = {};
 
-io.on('connection', (socket) => {
+// Mapping of receiver subscriptions: receiverId → senderId
+let subscriptions = {};
+
+io.on('connection', socket => {
     console.log('User connected:', socket.id);
 
     // Sender joins
-    socket.on('sender-join', (name) => {
+    socket.on('sender-join', name => {
         socket.isSender = true;
         socket.username = name;
-        onlineSenders[socket.id] = name;
-
-        // Notify all receivers of updated sender list
+        onlineSenders[socket.id] = { name, socketId: socket.id };
+        // Update all receivers
         io.emit('update-senders', onlineSenders);
-        console.log(`Sender joined: ${name}`);
     });
 
     // Receiver joins
-    socket.on('receiver-join', (name) => {
+    socket.on('receiver-join', name => {
         socket.isReceiver = true;
         socket.username = name;
-        console.log(`Receiver joined: ${name}`);
+        // Send current online senders to new receiver
+        socket.emit('update-senders', onlineSenders);
     });
 
-    // Receiver chooses a sender
-    socket.on('subscribe-sender', (senderId) => {
-        socket.subscribedSender = senderId;
-        console.log(`${socket.username} subscribed to ${onlineSenders[senderId]}`);
+    // Receiver subscribes to a sender
+    socket.on('subscribe-sender', senderId => {
+        subscriptions[socket.id] = senderId;
     });
 
-    // Sender sends data
-    socket.on('sender-data', (data) => {
-        // Forward data to all receivers subscribed to this sender
-        for (let [id, s] of io.sockets.sockets) {
-            if (s.subscribedSender === socket.id) {
-                s.emit('receive-data', data);
+    // Sender sends sensor data
+    socket.on('sensor-data', data => {
+        // Forward to all receivers subscribed to this sender
+        for (let [receiverId, senderId] of Object.entries(subscriptions)) {
+            if (senderId === socket.id) {
+                io.to(receiverId).emit('sensor-data', data);
             }
         }
     });
 
-    // Handle disconnect
+    // Sender sends WebRTC signaling data
+    socket.on('webrtc-signal', ({ targetId, signal }) => {
+        io.to(targetId).emit('webrtc-signal', { fromId: socket.id, signal });
+    });
+
     socket.on('disconnect', () => {
         if (socket.isSender) {
             delete onlineSenders[socket.id];
             io.emit('update-senders', onlineSenders);
-            console.log(`Sender disconnected: ${socket.username}`);
-        } else {
-            console.log(`User disconnected: ${socket.username}`);
+        } else if (socket.isReceiver) {
+            delete subscriptions[socket.id];
         }
+        console.log('User disconnected:', socket.id);
     });
 });
 

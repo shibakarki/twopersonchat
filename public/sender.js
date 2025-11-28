@@ -1,44 +1,41 @@
 const socket = io();
+
 let localStream;
+let name;
 
-document.getElementById('join-btn').onclick = async () => {
-    const name = document.getElementById('name-input').value.trim();
-    if (!name) return alert('Enter name');
-    socket.emit('sender-join', name);
+document.getElementById('joinBtn').onclick = async () => {
+    name = document.getElementById('nameInput').value.trim();
+    if (!name) return alert('Enter a name');
 
+    document.getElementById('loginDiv').style.display = 'none';
     document.getElementById('controls').style.display = 'block';
 
-    // Start camera if enabled
+    socket.emit('sender-join', name);
+
+    // Camera setup
     if (document.getElementById('cameraToggle').checked) {
         localStream = await navigator.mediaDevices.getUserMedia({ video: true });
         document.getElementById('localVideo').srcObject = localStream;
 
-        // Send frames periodically (simplified)
-        const videoTrack = localStream.getVideoTracks()[0];
-        const imageCapture = new ImageCapture(videoTrack);
-
-        setInterval(async () => {
-            if (document.getElementById('cameraToggle').checked) {
-                const bitmap = await imageCapture.grabFrame();
-                const canvas = document.createElement('canvas');
-                canvas.width = bitmap.width;
-                canvas.height = bitmap.height;
-                canvas.getContext('2d').drawImage(bitmap, 0, 0);
-                const dataURL = canvas.toDataURL('image/jpeg', 0.5);
-                socket.emit('sender-data', { type: 'camera', data: dataURL });
-            }
-        }, 200); // every 200ms
+        // WebRTC peer connection will be setup later for receiver
     }
 
-    // Send location & speed
+    // Send location + speed periodically
     setInterval(() => {
-        if (navigator.geolocation && document.getElementById('locationToggle').checked) {
+        if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(pos => {
-                const lat = pos.coords.latitude;
-                const lon = pos.coords.longitude;
-                const speed = pos.coords.speed || 0;
-                socket.emit('sender-data', { type: 'location', lat, lon, speed });
+                const data = {};
+                if (document.getElementById('locationToggle').checked) {
+                    data.lat = pos.coords.latitude;
+                    data.lon = pos.coords.longitude;
+                }
+                if (document.getElementById('speedToggle').checked) {
+                    data.speed = pos.coords.speed || 0;
+                }
+                if (Object.keys(data).length > 0) {
+                    socket.emit('sensor-data', data);
+                }
             });
         }
-    }, 1000); // every second
-}, false;
+    }, 1000);
+};

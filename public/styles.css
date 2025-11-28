@@ -19,7 +19,7 @@ body {
 /* ===================== LOGIN PAGE ===================== */
 .login-container {
   width: 100%;
-  max-width: 30rem; /* Scales for large screens */
+  max-width: 30rem;
 }
 
 .login-card {
@@ -279,22 +279,46 @@ body {
   transform: translateY(0);
 }
 
-/* ===================== DEVICE SECTION ===================== */
+/* ===================== ROOM ENVIRONMENT ===================== */
 .bulb-section {
   text-align: center;
+  background: linear-gradient(to top, #444 0%, #222 70%);
+  border-radius: 2rem;
+  padding: 2rem;
+  box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+  position: relative;
 }
 
 .bulb-container {
-  margin: 2.5rem auto;
-  max-width: 18.75rem;
+  margin: 0 auto;
+  max-width: 150px;  /* smaller bulb */
+  width: 30%;
 }
 
 .light-bulb {
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 0.625rem 1.875rem rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 0 20px rgba(255, 223, 0, 0.5));
+  animation: bulb-glow 2s infinite alternate;
 }
 
+/* ===================== BULB ANIMATION ===================== */
+@keyframes bulb-glow {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 15px rgba(255, 223, 0, 0.5));
+  }
+  50% {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 40px rgba(255, 223, 0, 0.8));
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 15px rgba(255, 223, 0, 0.5));
+  }
+}
+
+/* ===================== INTENSITY READOUT ===================== */
 .intensity-readout {
   margin-top: 2.5rem;
   padding: 1.875rem;
@@ -313,8 +337,8 @@ body {
 .readout-value {
   font-size: clamp(2.5rem, 6vw, 3rem);
   font-weight: 700;
-  color: #667eea;
-  text-shadow: 0 0.125rem 0.625rem rgba(102, 126, 234, 0.3);
+  color: #ffd700;
+  text-shadow: 0 0.125rem 0.625rem rgba(255, 223, 0, 0.5);
 }
 
 /* ===================== PULSE ANIMATIONS ===================== */
@@ -334,21 +358,17 @@ body {
 /* ===================== MEDIA QUERIES ===================== */
 /* Mobile */
 @media (max-width: 600px) {
-  .login-card, .content-card {
-    padding: 1.875rem 1.25rem;
-  }
-  .intensity-display { font-size: 3.5rem; }
-  .readout-value { font-size: 2.5rem; }
+  .login-card, .content-card { padding: 1.875rem 1.25rem; }
+  .intensity-display { font-size: 3rem; }
+  .readout-value { font-size: 2rem; }
   .quick-btn { padding: 0.625rem 1rem; font-size: 0.75rem; }
+  .bulb-container { width: 40%; max-width: 120px; }
 }
 
 /* Tablet */
 @media (min-width: 601px) and (max-width: 900px) {
-  .login-card, .content-card {
-    padding: 2rem;
-  }
-  .intensity-display { font-size: 4.5rem; }
-  .readout-value { font-size: 3rem; }
+  .intensity-display { font-size: 4rem; }
+  .readout-value { font-size: 2.5rem; }
 }
 
 /* 780p Screens */
